@@ -1,5 +1,7 @@
 require "logplexer/version"
 require "honeybadger"
+require 'logplexer/railtie' if defined?(Rails)
+
 module Logplexer
 
   extend self
@@ -39,7 +41,7 @@ module Logplexer
         # Default kind of log for an object or whatevs
         logger.send( log_type, exception.inspect )
       end
-    else
+    elsif ENV['LOG_ENV'] == 'production'
       #TODO: Maybe extend this to include other kinds of notifiers.
       Honeybadger.notify( exception, opts )
     end

@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Ryan Canty"]
   spec.email         = ["jrcanty@gmail.com"]
 
-  spec.summary       = %q{ Multiplexes logs to different places depending on environment }
+  spec.summary       = %q{ Multiplex all the logs }
   spec.description   = %q{ Multiplexes logs to different places depending on environment }
   spec.homepage      = "TODO: Put your gem's website or public repo URL here."
   spec.license       = "MIT"
