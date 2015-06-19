@@ -1,5 +1,5 @@
 require "logplexer/version"
-
+require "honeybadger"
 module Logplexer
 
   extend self
@@ -20,15 +20,11 @@ module Logplexer
     return if exception.nil?
 
     logfile = opts.delete( :logfile )
-    logger = if logfile
-      Logger.new( logfile )
-    else
-      Rails.logger
-    end
+    logger = Logger.new( logfile || STDOUT )
 
     verbose = opts.delete( :verbose )
 
-    if Rails.env == 'development' or Rails.env == 'test'
+    if ENV['LOG_ENV'] == 'development' or ENV['LOG_ENV'] == 'test'
       # Make sure that the exception is an actual exception and
       # not just a hash since Honeybadger accepts both
       if exception.is_a? Exception
@@ -44,7 +40,8 @@ module Logplexer
         logger.send( log_type, exception.inspect )
       end
     else
-      Honeybadger.notify(exception, opts)
+      #TODO: Maybe extend this to include other kinds of notifiers.
+      Honeybadger.notify( exception, opts )
     end
   end
 end
