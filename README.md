@@ -22,18 +22,18 @@ Logplexer is a wrapper for `Honeybadger.notify` or Ruby's `Logger` class with al
 
 If you are in `development`, you can write:
 
-    ```ruby
-    > Logplexer.info( Exception.new("Oh hai!") )
-    I, [2015-06-20T15:25:02.182916 #23463]  INFO -- : Oh hai!
-    => nil
-    ```
+```ruby
+> Logplexer.info( Exception.new("Oh hai!") )
+I, [2015-06-20T15:25:02.182916 #23463]  INFO -- : Oh hai!
+=> nil
+```
 
 Or in `production`:
 
-    ```ruby
-    > Logplexer.info( Exception.new("Oh hai!") )
-    => "684f15d9-c8f6-4ad8-885d-3ee50f612305"
-    ```
+```ruby
+> Logplexer.info( Exception.new("Oh hai!") )
+=> "684f15d9-c8f6-4ad8-885d-3ee50f612305"
+```
 
 Which will call `Honeybadger.notify()`
 
@@ -41,20 +41,20 @@ Inputs can be any type, `Exception`, `String`, `Hash`, etc.
 
 If you are in development and would like to log to a logfile, just specify a logfile in the opts argument like so:
 
-    ```ruby
-    > Logplexer.info( "Oh hai!", { logfile: '/Users/ryanc/Desktop/log.txt'} )
-     => true
-    ```
+```ruby
+> Logplexer.info( "Oh hai!", { logfile: '/Users/ryanc/Desktop/log.txt'} )
+ => true
+```
 
-    ```bash
-    cat ~/Desktop/log.txt
-    # Logfile created on 2015-06-20 15:49:16 -0700 by logger.rb/47272
-    I, [2015-06-20T15:49:16.040351 #23538]  INFO -- : Oh hai!
-    ```
+```bash
+cat ~/Desktop/log.txt
+# Logfile created on 2015-06-20 15:49:16 -0700 by logger.rb/47272
+I, [2015-06-20T15:49:16.040351 #23538]  INFO -- : Oh hai!
+```
 
 If you would like to see the whole backtrace, just set `verbose` to true:
 
-
+*TODO: get this working *
 
 ## Configuration
 
