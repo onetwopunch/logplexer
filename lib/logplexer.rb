@@ -25,8 +25,18 @@ module Logplexer
     logger = Logger.new( logfile || STDOUT )
 
     verbose = opts.delete( :verbose )
+    verbose = ENV["LOG_VERBOSE"] == "true"
 
-    if ENV['LOG_ENV'] == 'development' or ENV['LOG_ENV'] == 'test'
+    if ENV['LOG_TO_HB'] == "true"
+      #TODO: Maybe extend this to include other kinds of notifiers.
+      if exception.is_a? String
+        exception = {
+                      error_class: "Exception",
+                      error_message: exception
+                    }
+      end
+      Honeybadger.notify( exception, opts )
+    else
       # Make sure that the exception is an actual exception and
       # not just a hash since Honeybadger accepts both
       if exception.is_a? Exception
@@ -41,9 +51,6 @@ module Logplexer
         # Default kind of log for an object or whatevs
         logger.send( log_type, exception.inspect )
       end
-    elsif ENV['LOG_ENV'] == 'production'
-      #TODO: Maybe extend this to include other kinds of notifiers.
-      Honeybadger.notify( exception, opts )
     end
   end
 end

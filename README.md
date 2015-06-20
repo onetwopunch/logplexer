@@ -1,28 +1,72 @@
-# Logplexer
+# Logplexer - Multiplex all the logs
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/logplexer`. To experiment with that code, run `bin/console` for an interactive prompt.
+Logplexer allows you to multiplex where your logs go depending on the environment: either standard out, log file or Honeybadger. This can be configured at initialize-time or runtime.
 
-TODO: Delete this and the text above, and describe your gem
+By default in a Rails app, it is set to log to standard out in `development` and `test` and log to Honeybadger in any other environment. As log as you have Honeybadger set up in your application this gem will work.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'logplexer'
+gem 'logplexer', github: "Fullscreen/logplexer"
 ```
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install logplexer
-
 ## Usage
 
-TODO: Write usage instructions here
+Logplexer is a wrapper for `Honeybadger.notify` or Ruby's `Logger` class with all the methods for the typical `Logger` class.
+
+If you are in `development`, you can write:
+
+    ```ruby
+    > Logplexer.info( Exception.new("Oh hai!") )
+    I, [2015-06-20T15:25:02.182916 #23463]  INFO -- : Oh hai!
+    => nil
+    ```
+
+Or in `production`:
+
+    ```ruby
+    > Logplexer.info( Exception.new("Oh hai!") )
+    => "684f15d9-c8f6-4ad8-885d-3ee50f612305"
+    ```
+
+Which will call `Honeybadger.notify()`
+
+Inputs can be any type, `Exception`, `String`, `Hash`, etc.
+
+If you are in development and would like to log to a logfile, just specify a logfile in the opts argument like so:
+
+    ```ruby
+    > Logplexer.info( "Oh hai!", { logfile: '/Users/ryanc/Desktop/log.txt'} )
+     => true
+    ```
+
+    ```bash
+    cat ~/Desktop/log.txt
+    # Logfile created on 2015-06-20 15:49:16 -0700 by logger.rb/47272
+    I, [2015-06-20T15:49:16.040351 #23538]  INFO -- : Oh hai!
+    ```
+
+If you would like to see the whole backtrace, just set `verbose` to true:
+
+
+
+## Configuration
+
+If your `RAILS_ENV` is set to `development` or `test`, Logplexer will set an environment variable called `LOG_TO_HB` as "false" if it is anything else, i.e. `production` or `staging`, `LOG_TO_HB` will be set to "true".
+
+Overriding this behavior is as easy as adding an initializer with the line:
+
+    ENV['LOG_TO_HB'] = "true"
+
+or
+
+    ENV['LOG_TO_HB'] = "false"
 
 ## Development
 
@@ -38,4 +82,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
