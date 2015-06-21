@@ -24,16 +24,14 @@ module Logplexer
     logfile = opts.delete( :logfile )
     logger = Logger.new( logfile || STDOUT )
 
-    verbose = opts.delete( :verbose )
-    verbose = ENV["LOG_VERBOSE"] == "true"
+    # Override the verbosity if LOG_VERBOSE is unset
+    verbose = ENV["LOG_VERBOSE"] == "true" ? true : opts.delete( :verbose )
 
     if ENV['LOG_TO_HB'] == "true"
       #TODO: Maybe extend this to include other kinds of notifiers.
       if exception.is_a? String
-        exception = {
-                      error_class: "Exception",
-                      error_message: exception
-                    }
+        exception = { error_class: "Exception",
+                      error_message: exception }
       end
       Honeybadger.notify( exception, opts )
     else
@@ -41,7 +39,11 @@ module Logplexer
       # not just a hash since Honeybadger accepts both
       if exception.is_a? Exception
         logger.send( log_type, exception.message )
-        logger.send( log_type, exception.backtrace ) if verbose
+        if verbose
+          exception.backtrace.each do |entry|
+            logger.send( log_type, "> #{entry}" ) 
+          end
+        end
 
       elsif exception.is_a? String
         # Log just the string if thats what the user wants

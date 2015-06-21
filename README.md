@@ -52,9 +52,40 @@ cat ~/Desktop/log.txt
 I, [2015-06-20T15:49:16.040351 #23538]  INFO -- : Oh hai!
 ```
 
-If you would like to see the whole backtrace, just set `verbose` to true:
+If you would like to see the whole backtrace, just set `verbose` to true like so:
 
-*TODO: get this working *
+```ruby
+def method1
+  begin
+    raise "Holy errors Batman"
+  rescue => e
+    Logplexer.error( e, { verbose: true} )
+  end
+end
+
+def method2
+  method1
+end
+
+def method3
+  method2
+end
+
+method3
+```
+
+```
+E, [2015-06-21T16:04:59.247900 #25737] ERROR -- : Holy errors Batman
+E, [2015-06-21T16:04:59.248003 #25737] ERROR -- : > /Users/ryanc/Workspace/test_logplexer/config/initializers/logplexer.rb:6:in `method1'
+E, [2015-06-21T16:04:59.248024 #25737] ERROR -- : > /Users/ryanc/Workspace/test_logplexer/config/initializers/logplexer.rb:13:in `method2'
+E, [2015-06-21T16:04:59.248041 #25737] ERROR -- : > /Users/ryanc/Workspace/test_logplexer/config/initializers/logplexer.rb:17:in `method3'
+```
+
+Or if you are in developmet and would like to have all instances of Logplexer be verbose, just set the environment variable `LOG_VERBOSE` to "true" like so:
+
+    ENV["LOG_VERBOSE"] = "true"
+
+and everything that isn't specifically marked as `verbose: false` will print the backtrace. Keep in mind that verbose only works when the input is an Exception type.
 
 ## Configuration
 
