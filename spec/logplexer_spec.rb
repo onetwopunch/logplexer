@@ -14,6 +14,14 @@ describe Logplexer do
   end
 
   it 'should log to STDOUT' do
-    expect { Logplexer.info("Oh hai") }.to output("Oh hai").to_stdout_from_any_process
+    expect { Logplexer.info("") }.to output("Oh hai").to_stdout_from_any_process
+  end
+
+  it 'should log to Honeybadger' do
+    ENV['LOG_TO_HB'] = 'true'
+    VCR.use_cassette('honeybadger') do
+      reg = /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/
+      expect { Logplexer.error('the error').to match( reg ) }
+    end
   end
 end
