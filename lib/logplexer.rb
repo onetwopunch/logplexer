@@ -1,7 +1,7 @@
 require "logplexer/version"
 require "honeybadger"
 require 'logplexer/railtie' if defined?(Rails)
-
+require 'logger'
 module Logplexer
 
   extend self
@@ -41,7 +41,7 @@ module Logplexer
         logger.send( log_type, exception.message )
         if verbose
           exception.backtrace.each do |entry|
-            logger.send( log_type, "> #{entry}" ) 
+            logger.send( log_type, "> #{entry}" )
           end
         end
 
