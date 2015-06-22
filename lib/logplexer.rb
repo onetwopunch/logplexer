@@ -40,6 +40,7 @@ module Logplexer
       if exception.is_a? Exception
         logger.send( log_type, exception.message )
         if verbose
+          puts "VERBOSE TRUE"
           exception.backtrace.each do |entry|
             logger.send( log_type, "> #{entry}" )
           end

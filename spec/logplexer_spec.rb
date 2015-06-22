@@ -14,7 +14,8 @@ describe Logplexer do
   end
 
   it 'should log to STDOUT' do
-    expect { Logplexer.info("") }.to output("Oh hai").to_stdout_from_any_process
+    Logger.any_instance.should_receive(:error).with("WAT")
+    Logplexer.error("WAT")
   end
 
   it 'should log to Honeybadger' do
